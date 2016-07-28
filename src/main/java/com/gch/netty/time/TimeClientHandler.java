@@ -1,4 +1,4 @@
-package com.gch.netty;
+package com.gch.netty.time;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -10,35 +10,35 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class TimeClientHandler extends ChannelHandlerAdapter {
 
-    private final ByteBuf clientMessage;
+    private int counter;
+    private byte[] req;
 
 
     public TimeClientHandler() {
 
-        byte [] req = "QUERY TIME ORDER".getBytes();
-        clientMessage = Unpooled.buffer(req.length);
-        clientMessage.writeBytes(req);
+        req = ("QUERY TIME ORDER"+System.getProperty("line.separator")).getBytes();
+
     }
 
     //客户端发送消息
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
-        ctx.writeAndFlush(clientMessage);
-        System.out.println("TimeClient post Message："+ "QUERY TIME ORDER" );
+        ByteBuf message = null;
+        for(int i=0;i<100;i++){
+            message = Unpooled.buffer(req.length);
+            message.writeBytes(req);
+            ctx.writeAndFlush(message);
+        }
     }
 
     //客户端接收消息
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf)msg;
-        byte [] req = new byte[buf.readableBytes()];
 
-        buf.readBytes(req);
+        String body = (String)msg;
 
-        String body = new String(req,"UTF-8");
-
-        System.out.println("Now is :"+ body);
+        System.out.println("Now is :"+ body+" ;the counter is :"+(++counter));
     }
 
     @Override

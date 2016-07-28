@@ -1,10 +1,13 @@
-package com.gch.netty;
+package com.gch.netty.time;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+
 /**
  * Created by gch on 16-7-28.
  */
@@ -35,6 +38,9 @@ public class TimeServer {
 
         @Override
         protected void initChannel(SocketChannel socketChannel) throws Exception {
+            //LineBasedFrameDecoder(1024)，StringDecoder()用来解决TCP粘包/拆包问题
+            socketChannel.pipeline().addLast(new LineBasedFrameDecoder(1024));
+            socketChannel.pipeline().addLast(new StringDecoder());
             socketChannel.pipeline().addLast(new TimeServerHandler());
         }
     }

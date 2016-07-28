@@ -1,4 +1,4 @@
-package com.gch.netty;
+package com.gch.netty.time;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -9,23 +9,20 @@ import io.netty.channel.ChannelHandlerContext;
  * Created by gch on 16-7-28.
  */
 public class TimeServerHandler extends ChannelHandlerAdapter {
+    private int counter;
     //对网络事件进行读写操作
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        //类型转换
-        ByteBuf buf = (ByteBuf)msg;
 
-        //buf.readableBytes()获取缓冲区可读的字节数
-        byte [] req = new byte[buf.readableBytes()];
 
-        //将缓冲区的字节数组复制到新建数组req中
-        buf.readBytes(req);
 
-        String body = new String(req,"UTF-8");
+        String body = (String)msg;
 
-        System.out.println("the timeserver receive order ："+ body);
+        System.out.println("the timeserver receive order ："+ body+" ;the counter is :"+ (++counter));
 
         String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body)?new java.util.Date(System.currentTimeMillis()).toString():"BAD ORDER";
+
+        currentTime = currentTime + System.getProperty("line.separator");
 
         ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
 
