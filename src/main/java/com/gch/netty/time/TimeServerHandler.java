@@ -9,25 +9,36 @@ import io.netty.channel.ChannelHandlerContext;
  * Created by gch on 16-7-28.
  */
 public class TimeServerHandler extends ChannelHandlerAdapter {
-    private int counter;
+    private int counter=0;
     //对网络事件进行读写操作
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
 
+        System.out.println("receive client : [ " + msg + "]");
 
-        String body = (String)msg;
+//        String body = (String)msg;
+//
+//        System.out.println("This is "+ ++counter+" times receive client:[ "+body+" ]");
+//
+//        body +="$_";
+//
+//        ByteBuf echo = Unpooled.copiedBuffer(body.getBytes());
+//
+//        ctx.write(echo);
 
-        System.out.println("the timeserver receive order ："+ body+" ;the counter is :"+ (++counter));
 
-        String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body)?new java.util.Date(System.currentTimeMillis()).toString():"BAD ORDER";
 
-        currentTime = currentTime + System.getProperty("line.separator");
-
-        ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
+//        System.out.println("the timeserver receive order ："+ body+" ;the counter is :"+ (++counter));
+//
+//        String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body)?new java.util.Date(System.currentTimeMillis()).toString():"BAD ORDER";
+//
+//        currentTime = currentTime + System.getProperty("line.separator");
+//
+//        ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
 
         //异步发送应答消息到缓冲数组中，再调用flush()
-        ctx.write(resp);
+        //ctx.write(resp);
 
     }
 
@@ -39,6 +50,7 @@ public class TimeServerHandler extends ChannelHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
         ctx.close();
     }
 }
